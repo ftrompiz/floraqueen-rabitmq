@@ -58,7 +58,7 @@ class Consumer {
             $this->email_sender->sendEmailViaMailChimp($msg_encoded);
         };
 
-        $this->channel->basic_consume($this->queue_name, '', false, false, false, false, $callback);
+        $this->channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
 
         while ($this->channel->is_consuming()) {
             echo ' [x] Waiting for messages ', "\n";
