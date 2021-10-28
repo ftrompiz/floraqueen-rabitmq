@@ -1,4 +1,5 @@
 <?php
+namespace floraqueen_rabbitmq;
 require('vendor/autoload.php');
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -35,19 +36,27 @@ class Producer
         $this->channel->queue_declare($this->queue_name, false, true, false, false);
     }
 
-    public function sendMessage()
+    public function sendMessage($msg_json)
     {
-        $msg_test = [
-            "number" => 9
-        ];
-        $msg = new AMQPMessage(json_encode($msg_test));
-        $this->channel->basic_publish($msg, '', $this->queue_name);
+        $msg_to_send = new AMQPMessage(json_encode($msg_json));
+        $this->channel->basic_publish($msg_to_send, '', $this->queue_name);
 
-        echo " [x] Sent 'Hello World!'\n";
+        echo " [x] Sent message \n";
+        print_r($msg_to_send);
+        echo "\n";
+    }
+
+    public function createMessage($email, $subject, $message)
+    {
+        return [
+            "email" => $email,
+            "subject" => $subject,
+            "message" => $message
+        ];
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function closeConnection()
     {
@@ -60,12 +69,16 @@ $prod = new Producer();
 
 try {
     $prod->connectToRabbitMQ();
-    $prod->sendMessage();
+
+    $msg = $prod->createMessage("trober131@gmail.com","prueba mq","Enviando mensaje prueba");
+
+    $prod->sendMessage($msg);
+
     $prod->closeConnection();
 }
 catch (Exception $exception)
 {
-    echo "Error en la connection".PHP_EOL;
+    echo "An error has ocurred".PHP_EOL;
     print_r($exception);
 }
 
