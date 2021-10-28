@@ -23,6 +23,7 @@ class EmailSender {
             'Reply-To: ' . $this->from_email . "\r\n" .
             'X-Mailer: PHP/' . phpversion();
 
+        echo ' [x] Sending email via mail ', "\n";
         mail($to, $subject, $message, $headers);
     }
 
@@ -33,6 +34,7 @@ class EmailSender {
             $mailchimp = new ApiClient();
             $mailchimp->setApiKey($this->mailchimp_key);
 
+            echo ' [x] Sending email via MailChimp ', "\n";
             $response = $mailchimp->messages->send([
                 "message" => [
                     "from_email" => $this->from_email,
