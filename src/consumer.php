@@ -52,7 +52,9 @@ class Consumer {
 
             $msg_encoded = json_decode($msg->body,true);
 
-            //$this->email_sender->sendEmailViaPHP($msg_encoded);
+            // Envio de mensaje via PHP
+            //$this->email_sender->sendEmailViaPHP($msg_encoded);ç
+            // Envio de mensaje via MailChimp
             $this->email_sender->sendEmailViaMailChimp($msg_encoded);
         };
 

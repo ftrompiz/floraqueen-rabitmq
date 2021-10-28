@@ -6,7 +6,7 @@ require 'vendor/autoload.php';
 
 class EmailSender {
 
-    public $mailchimp_key = '6Lr6qIveBJFK8s7RahEGvA';
+    public $mailchimp_key = '';
     public $from_email = 'franciscoTrompiz@amaris.com';
 
     public function __construct()

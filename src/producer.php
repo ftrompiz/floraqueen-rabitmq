@@ -42,7 +42,7 @@ class Producer
         $this->channel->basic_publish($msg_to_send, '', $this->queue_name);
 
         echo " [x] Sent message \n";
-        print_r($msg_to_send);
+        print_r($msg_to_send->body);
         echo "\n";
     }
 
