@@ -1,11 +1,11 @@
 <?php
-namespace floraqueen_rabbitmq;
+namespace Trobe\FloraqueenRabitmq\Classes;
 require('vendor/autoload.php');
-require('emailsender.php');
+require('EmailSender.php');
 
+use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
-use floraqueen_rabbitmq\EmailSender;
 
 class Consumer {
 
@@ -53,9 +53,9 @@ class Consumer {
             $msg_encoded = json_decode($msg->body,true);
 
             // Envio de mensaje via PHP
-            //$this->email_sender->sendEmailViaPHP($msg_encoded);ç
+            $this->email_sender->sendEmailViaPHP($msg_encoded);
             // Envio de mensaje via MailChimp
-            $this->email_sender->sendEmailViaMailChimp($msg_encoded);
+            //$this->email_sender->sendEmailViaMailChimp($msg_encoded);
         };
 
         $this->channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
@@ -75,18 +75,3 @@ class Consumer {
         $this->connection->close();
     }
 }
-
-$cons = new Consumer();
-try
-{
-    $cons->connectToRabbitMQ();
-    $cons->initializeWaiting();
-    $cons->closeConnection();
-}
-catch (Exception $exception)
-{
-    echo "An error has ocurred".PHP_EOL;
-    print_r($exception);
-}
-
-

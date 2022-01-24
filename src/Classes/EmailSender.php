@@ -1,13 +1,12 @@
 <?php
-namespace floraqueen_rabbitmq;
+namespace Trobe\FloraqueenRabitmq\Classes;
 use MailchimpTransactional\ApiClient;
-
-require 'vendor/autoload.php';
+require('vendor/autoload.php');
 
 class EmailSender {
 
-    public $mailchimp_key = '';
-    public $from_email = 'franciscoTrompiz@amaris.com';
+    public $mailchimp_key = '6Lr6qIveBJFK8s7RahEGvA';
+    public $from_email = 'francisco.trompizbergueiro@amaris.com';
 
     public function __construct()
     {
