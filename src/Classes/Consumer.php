@@ -1,6 +1,6 @@
 <?php
 namespace Trobe\FloraqueenRabitmq\Classes;
-require('vendor/autoload.php');
+require_once __DIR__.'/../../vendor/autoload.php';
 require('EmailSender.php');
 
 use Exception;
