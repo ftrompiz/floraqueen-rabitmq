@@ -1,6 +1,6 @@
-# Floraqueen-rabitmq
+# FloraQueen RabbitMQ Test
 
-Test Rabitmq for Floraqueen 
+RabbitMQ Test of FloraQueen
 
 ## First step, composer
 
