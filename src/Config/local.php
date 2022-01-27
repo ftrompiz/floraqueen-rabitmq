@@ -11,12 +11,9 @@ return [
         'queue_name' => 'jobs',
     ],
     'mailer' => [
-        'from_email' => 'francisco.trompizbergueiro@amaris.com',
-        'php_email' => [
-
-        ],
+        'from_email' => 'test@mandrillapp.com',
         'mailchimp' => [
-            'api_key' => '123456789'
+            'api_key' => 'KlbUQrcXxAk5NhAlNk2zdQ'
         ]
     ]
 ];

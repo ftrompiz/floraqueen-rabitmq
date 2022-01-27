@@ -54,7 +54,7 @@ class EmailSender {
             $mailchimp = new ApiClient();
             $mailchimp->setApiKey($this->config['mailer']['mailchimp']['api_key']);
 
-            echo ' [x] Sending email via MailChimp ', "\n";
+            echo ' [x] Sending email via MailChimp '.PHP_EOL;
             $response = $mailchimp->messages->send([
                 "message" => [
                     "from_email" => $this->config['mailer']['from_email'],
@@ -68,10 +68,9 @@ class EmailSender {
                     ]
                 ]
             ]);
-
             print_r($response);
         }
-        catch (\Exception $e)
+        catch (\Error $e)
         {
             echo 'Error: ', $e->getMessage(), "\n";
         }

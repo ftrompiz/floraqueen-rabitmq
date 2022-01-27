@@ -7,7 +7,7 @@ $prod = new Producer();
 try {
     $prod->connectToRabbitMQ();
 
-    $msg = $prod->createMessage("trober131@gmail.com","prueba mq","Enviando mensaje prueba");
+    $msg = $prod->createMessage("trober131@gmail.com","using test mode","Enviando mensaje prueba");
 
     $prod->sendMessage($msg);
 
