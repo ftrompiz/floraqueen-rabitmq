@@ -1,8 +1,9 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 use Trobe\FloraqueenRabitmq\Classes\Consumer;
+use Trobe\FloraqueenRabitmq\Classes\EmailSender;
 
-$cons = new Consumer();
+$cons = new Consumer(new EmailSender(EmailSender::SENDER_TYPE_MAIL_PHP));
 try
 {
     $cons->connectToRabbitMQ();

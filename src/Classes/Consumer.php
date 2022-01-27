@@ -8,7 +8,6 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
 
 class Consumer {
-
     /**
      * @var AMQPStreamConnection $connection
      */
@@ -23,45 +22,48 @@ class Consumer {
      */
     public $email_sender;
 
-    public $queue_name = 'jobs';
-
-    public $url = 'localhost';
-    public $port = 5672;
-
-    public $user = 'guest';
-    public $password = 'guest';
+    public $config;
 
 
-    public function __construct()
+    public function __construct($email_sender)
     {
-        // inicializamos la clase email sender para ser utilizada luego cuando se tenga que enviar algo
-        $this->email_sender = new EmailSender();
+        $this->email_sender = $email_sender;
+        $this->config = include(__DIR__.'/../config/local.php');
     }
 
     public function connectToRabbitMQ()
     {
         //inicar la conection al servidor de rabbitmq
-        $this->connection = new AMQPStreamConnection($this->url, $this->port, $this->user, $this->password);
+        $this->connection = new AMQPStreamConnection(
+            $this->config['rabbitmq']['url'],
+            $this->config['rabbitmq']['port'],
+            $this->config['rabbitmq']['username'],
+            $this->config['rabbitmq']['password']);
         // nos conectamos al canal donde se enviara los mensajes
         $this->channel = $this->connection->channel();
     }
 
     public function initializeWaiting()
     {
-        $this->channel->basic_consume($this->queue_name, '', false, true, false, false, function ($msg) {
-            // cuando llegue el mensaje pintamos el resultado
-            echo ' [x] Received ', "\n";
-            print_r($msg->body);
-            echo "\n";
+        $this->channel->basic_consume($this->config['rabbitmq']['queue_name'],
+            '',
+            false,
+            true,
+            false,
+            false, function ($msg) {
+                // cuando llegue el mensaje pintamos el resultado
+                echo ' [x] Received ', "\n";
+                print_r($msg->body);
+                echo "\n";
 
-            //hacemos un json decoe para que podamos acceder a la informacion mas facilmente
-            $msg_encoded = json_decode($msg->body,true);
+                //hacemos un json decoe para que podamos acceder a la informacion mas facilmente
+                $msg_encoded = json_decode($msg->body,true);
 
-            // Envio de mensaje via PHP
-            $this->email_sender->sendEmailViaPHP($msg_encoded);
-            // Envio de mensaje via MailChimp
-            //$this->email_sender->sendEmailViaMailChimp($msg_encoded);
-        });
+                // Envio de mensaje via PHP
+                $this->email_sender->sendEmail($msg_encoded);
+                // Envio de mensaje via MailChimp
+                //$this->email_sender->sendEmailViaMailChimp($msg_encoded);
+            });
 
         // iniciar loop infinito donde el consumer esperará los mensajes que este en la conal
         while ($this->channel->is_consuming()) {

@@ -1,6 +1,7 @@
 <?php
 namespace Trobe\FloraqueenRabitmq\Classes;
 require_once __DIR__.'/../../vendor/autoload.php';
+
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -16,35 +17,35 @@ class Producer
      */
     public $channel;
 
-    public $queue_name = 'jobs';
+    public $config;
 
-    public $url = 'localhost';
-    public $port = 5672;
-
-    public $user = 'guest';
-    public $password = 'guest';
 
     public function __construct()
     {
+        $this->config = include(__DIR__.'/../config/local.php');
     }
 
     public function connectToRabbitMQ()
     {
         // inicializamos la conneccion al servidor de rabitmq
-        $this->connection = new AMQPStreamConnection($this->url, $this->port, $this->user, $this->password);
+        $this->connection = new AMQPStreamConnection(
+            $this->config['rabbitmq']['url'],
+            $this->config['rabbitmq']['port'],
+            $this->config['rabbitmq']['username'],
+            $this->config['rabbitmq']['password']);
         // nos conectamos al canal
         $this->channel = $this->connection->channel();
 
-        // creamos una cola, en caso que exista en el servidor de rabitmq, esta no se vuelve a crear
-        $this->channel->queue_declare($this->queue_name, false, true, false, false);
+        // creamos una cola, en caso que exista en el servidor de rabbitmq, esta no se vuelve a crear
+        $this->channel->queue_declare($this->config['rabbitmq']['queue_name'], false, true, false, false);
     }
 
-    public function sendMessage($msg_json)
+    public function sendMessage($msg_array)
     {
         // creamos el mensaje que sera enviado a la cola
-        $msg_to_send = new AMQPMessage(json_encode($msg_json));
+        $msg_to_send = new AMQPMessage(json_encode($msg_array));
         // se envia a la cola el mensaje creado
-        $this->channel->basic_publish($msg_to_send, '', $this->queue_name);
+        $this->channel->basic_publish($msg_to_send, '', $this->config['rabbitmq']['queue_name']);
 
         // imprimimos el mensaje enviado en el terminal
         echo " [x] Sent message \n";
